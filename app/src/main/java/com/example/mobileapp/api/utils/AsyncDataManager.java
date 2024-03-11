@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
@@ -33,12 +34,14 @@ public class AsyncDataManager  {
     }
 
     private static String getResponse(URL url) {
+        BufferedReader in = null;
+        HttpURLConnection connection = null;
         try {
-            URLConnection connection = url.openConnection();
+            connection = (HttpURLConnection) url.openConnection();
             connection.setConnectTimeout(5000);
             connection.connect();
 
-            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             StringBuilder response = new StringBuilder();
             String inputLine;
 
@@ -51,6 +54,19 @@ public class AsyncDataManager  {
             System.out.println("Время ожидания соединения истекло");
         } catch (IOException e) {
             e.printStackTrace();
+        }
+
+        finally {
+            try {
+                if (connection != null)
+                    connection.disconnect();
+
+                if (in != null)
+                    in.close();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return null;
     }
