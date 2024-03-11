@@ -23,8 +23,7 @@ public class AsyncDataManager  {
                 if (jsonData == null)
                     return null;
 
-                JSONObject jsonObject = new JSONObject(jsonData);
-                return jsonObject.getJSONArray("data");
+                return new JSONObject(jsonData).getJSONArray("data");
 
             } catch (JSONException | MalformedURLException e) {
                 e.printStackTrace();
