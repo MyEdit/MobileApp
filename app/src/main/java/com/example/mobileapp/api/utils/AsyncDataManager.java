@@ -1,5 +1,9 @@
 package com.example.mobileapp.api.utils;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -7,22 +11,22 @@ import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 public class AsyncDataManager  {
-    public CompletableFuture<List<String[]>> getTableData(String stringURL) {
+    public CompletableFuture<JSONArray> getTableData(String stringURL) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                URL url = new URL(stringURL);
-                return Arrays.stream(
-                                getResponse(url).split("\\],\\["))
-                        .map(str -> str.split(","))
-                        .collect(Collectors.toList());
+                String jsonData = getResponse(new URL(stringURL));
 
-            } catch (NullPointerException | MalformedURLException e) {
+                if (jsonData == null)
+                    return null;
+
+                JSONObject jsonObject = new JSONObject(jsonData);
+                return jsonObject.getJSONArray("data");
+
+            } catch (JSONException | MalformedURLException e) {
+                e.printStackTrace();
                 return null;
             }
         });
@@ -41,10 +45,7 @@ public class AsyncDataManager  {
             while ((inputLine = in.readLine()) != null) {
                 response.append(inputLine);
             }
-            return response.toString()
-                    .replace("[[", "")
-                    .replace("]]", "")
-                    .replace("\"", "");
+            return response.toString();
 
         } catch (SocketTimeoutException e) {
             System.out.println("Время ожидания соединения истекло");

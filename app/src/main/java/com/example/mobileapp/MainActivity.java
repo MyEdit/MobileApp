@@ -17,7 +17,8 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.mobileapp.api.utils.AsyncDataManager;
 
-import java.util.List;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 public class MainActivity extends AppCompatActivity {
     public static final String API_URL = "http://192.168.0.105:5016/api/";
@@ -43,22 +44,28 @@ public class MainActivity extends AppCompatActivity {
         asyncDataManager.getTableData(API_URL + "GetMedicines").thenAccept(data -> runOnUiThread(() -> fillTable(tableLayout, data)));
     }
 
-    public void fillTable(TableLayout tableLayout, List<String[]> rows) {
+    public void fillTable(TableLayout tableLayout, JSONArray rows) {
         if (rows == null) {
             showNotification("Не удалось загрузить данные :(");
             return;
         }
+        try {
+            for (int i = 0; i < rows.length(); i++) {
+                TableRow tableRow = new TableRow(this);
+                JSONArray itemArray = rows.getJSONArray(i);
 
-        for(String[] row : rows) {
-            TableRow tableRow = new TableRow(this);
-            for (String collumn : row) {
-                TextView textView = new TextView(this);
-                textView.setGravity(Gravity.CENTER);
-                textView.setLayoutParams(paramsName);
-                textView.setText(collumn);
-                tableRow.addView(textView);
+                for (int j = 0; j < itemArray.length(); j++) {
+                    TextView textView = new TextView(this);
+                    textView.setGravity(Gravity.CENTER);
+                    textView.setLayoutParams(paramsName);
+                    textView.setText(itemArray.getString(j));
+                    tableRow.addView(textView);
+                }
+                tableLayout.addView(tableRow);
             }
-            tableLayout.addView(tableRow);
+        } catch (JSONException e) {
+            showNotification("Произошла ошибка при загрузке данных :(");
+            e.printStackTrace();
         }
     }
 
