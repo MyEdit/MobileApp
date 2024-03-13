@@ -16,12 +16,18 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.mobileapp.api.utils.AsyncDataManager;
+import com.example.mobileapp.api.utils.HttpRequestType;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.net.HttpURLConnection;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    public static final String API_URL = "http://192.168.0.105:5016/api/";
     private static final AsyncDataManager asyncDataManager = new AsyncDataManager();
     private static final TableRow.LayoutParams paramsName = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
 
@@ -39,9 +45,26 @@ public class MainActivity extends AppCompatActivity {
         fillMedicinesTable();
     }
 
+    private void addMedicine(Medicines medicine) {
+        try {
+            asyncDataManager.sendRequest(HttpRequestType.POST, "addMedicine", medicine.toJSONObject()).thenAccept(data -> runOnUiThread(() -> onAddMedicine(medicine, data)));
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void onAddMedicine(Medicines medicine, int status) {
+        if (status == HttpURLConnection.HTTP_OK) {
+            showNotification("Препарат " + medicine.Name + " успешно добавлен");
+            fillMedicinesTable();
+        }
+        else
+            showNotification("Произошла ошибка при добавлении препарата - " + medicine.Name);
+    }
+
     private void fillMedicinesTable() {
         TableLayout tableLayout = findViewById(R.id.mainTable);
-        asyncDataManager.getTableData(API_URL + "GetMedicines").thenAccept(data -> runOnUiThread(() -> fillTable(tableLayout, data)));
+        asyncDataManager.getTableData("getMedicines").thenAccept(data -> runOnUiThread(() -> fillTable(tableLayout, data)));
     }
 
     public void fillTable(TableLayout tableLayout, JSONArray rows) {
@@ -49,24 +72,29 @@ public class MainActivity extends AppCompatActivity {
             showNotification("Не удалось загрузить данные :(");
             return;
         }
-        try {
-            for (int i = 0; i < rows.length(); i++) {
-                TableRow tableRow = new TableRow(this);
-                JSONArray itemArray = rows.getJSONArray(i);
 
-                for (int j = 0; j < itemArray.length(); j++) {
-                    TextView textView = new TextView(this);
-                    textView.setGravity(Gravity.CENTER);
-                    textView.setLayoutParams(paramsName);
-                    textView.setText(itemArray.getString(j));
-                    tableRow.addView(textView);
-                }
-                tableLayout.addView(tableRow);
-            }
-        } catch (JSONException e) {
-            showNotification("Произошла ошибка при загрузке данных :(");
-            e.printStackTrace();
+        tableLayout.removeViews(1, tableLayout.getChildCount() - 1);
+
+        for (int i = 0; i < rows.length(); i++) {
+            try {
+                JSONObject itemObject = rows.getJSONObject(i);
+                addToTable(tableLayout, itemObject);
+            } catch (JSONException e) {e.printStackTrace();}
         }
+    }
+
+    public void addToTable(TableLayout tableLayout, JSONObject itemObject) throws JSONException {
+        TableRow tableRow = new TableRow(this);
+        Iterator<String> keys = itemObject.keys();
+        while (keys.hasNext()) {
+            String key = keys.next();
+            TextView textView = new TextView(this);
+            textView.setGravity(Gravity.CENTER);
+            textView.setLayoutParams(paramsName);
+            textView.setText(itemObject.getString(key));
+            tableRow.addView(textView);
+        }
+        tableLayout.addView(tableRow);
     }
 
     public void showNotification(String text) {
@@ -76,6 +104,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void onButtonRefresh_Clicked(View view) {
         fillMedicinesTable();
+        showNotification("Данные успешно обновлены");
+    }
+
+    public void onButtonAddMedicine_Clicked(View view) {
+        addMedicine(new Medicines(999, "Глицин", "Артемовский", 800));
     }
 }
 

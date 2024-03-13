@@ -22,17 +22,18 @@
         app:layout_constraintVertical_bias="0.008" />
 
     <ScrollView
+        android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginStart="5dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="30dp"
-        app:layout_constraintBottom_toTopOf="@+id/button_refresh"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/button3"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintTop_toBottomOf="@+id/textView">
 
         <TableLayout
             android:id="@+id/mainTable"
@@ -47,14 +48,22 @@
             tools:ignore="MissingConstraints">
 
             <TableRow>
+
+                <TextView
+                    android:layout_column="0"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="ID"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
                 <TextView
                     android:layout_column="0"
                     android:layout_weight="1"
                     android:gravity="center"
                     android:text="Наименование"
                     android:textSize="16sp"
-                    android:textStyle="bold"
-                    />
+                    android:textStyle="bold"></TextView>
 
                 <TextView
                     android:layout_column="1"
@@ -62,8 +71,7 @@
                     android:gravity="center"
                     android:text="Склад"
                     android:textSize="16sp"
-                    android:textStyle="bold">
-                </TextView>
+                    android:textStyle="bold"></TextView>
 
                 <TextView
                     android:layout_column="2"
@@ -71,21 +79,31 @@
                     android:gravity="center"
                     android:text="Количество"
                     android:textSize="16sp"
-                    android:textStyle="bold">
-                </TextView>
+                    android:textStyle="bold"></TextView>
             </TableRow>
         </TableLayout>
     </ScrollView>
 
     <Button
-        android:id="@+id/button_refresh"
+        android:id="@+id/button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="50dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginBottom="44dp"
+        android:onClick="onButtonAddMedicine_Clicked"
+        android:text="Добавить"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="25dp"
+        android:layout_marginBottom="44dp"
         android:onClick="onButtonRefresh_Clicked"
         android:text="Обновить"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
