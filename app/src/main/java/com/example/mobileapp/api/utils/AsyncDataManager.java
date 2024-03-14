@@ -49,6 +49,7 @@ public class AsyncDataManager  {
             try {
                 URL url = new URL(API_URL + stringURL);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setConnectTimeout(3000);
 
                 connection.setRequestMethod(RequestMethods.get(requestType));
                 connection.setRequestProperty("Content-Type", "application/json");
@@ -60,6 +61,7 @@ public class AsyncDataManager  {
                     outputStream.flush();
                     outputStream.close();
                 }
+
                 return connection.getResponseCode();
 
             } catch (Exception e) {
@@ -74,7 +76,7 @@ public class AsyncDataManager  {
         HttpURLConnection connection = null;
         try {
             connection = (HttpURLConnection) url.openConnection();
-            connection.setConnectTimeout(5000);
+            connection.setConnectTimeout(3000);
             connection.connect();
 
             in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
