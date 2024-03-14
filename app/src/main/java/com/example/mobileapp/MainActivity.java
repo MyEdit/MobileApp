@@ -1,5 +1,6 @@
 package com.example.mobileapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -43,23 +44,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         fillMedicinesTable();
-    }
-
-    private void addMedicine(Medicines medicine) {
-        try {
-            asyncDataManager.sendRequest(HttpRequestType.POST, "addMedicine", medicine.toJSONObject()).thenAccept(data -> runOnUiThread(() -> onAddMedicine(medicine, data)));
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void onAddMedicine(Medicines medicine, int status) {
-        if (status == HttpURLConnection.HTTP_OK) {
-            showNotification("Препарат " + medicine.Name + " успешно добавлен");
-            fillMedicinesTable();
-        }
-        else
-            showNotification("Произошла ошибка при добавлении препарата - " + medicine.Name);
     }
 
     private void fillMedicinesTable() {
@@ -108,7 +92,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onButtonAddMedicine_Clicked(View view) {
-        addMedicine(new Medicines(999, "Глицин", "Артемовский", 800));
+        Intent intent = new Intent(this, SecondActivity.class);
+        startActivity(intent);
     }
 }
 
