@@ -1,4 +1,6 @@
-package com.example.mobileapp.api.utils;
+package com.example.mobileapp.utils;
+
+import com.example.mobileapp.utils.HttpRequestType;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -8,17 +10,19 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public class AsyncDataManager  {
-    public static final String API_URL = "http://192.168.0.105:5016/api/Medicines/";
-    private static final Map<HttpRequestType, String> RequestMethods = new HashMap<HttpRequestType, String>();
+    private static final String API_URL = "http://192.168.0.105:5016/api/Medicines/";
+    private static final Map<HttpRequestType, String> RequestMethods = new HashMap<>();
 
     static {
         RequestMethods.put(HttpRequestType.GET, "GET");
@@ -27,7 +31,7 @@ public class AsyncDataManager  {
         RequestMethods.put(HttpRequestType.DELETE, "DELETE");
     }
 
-    public CompletableFuture<JSONArray> getTableData(String stringURL) {
+    public static CompletableFuture<JSONArray> getTableData(String stringURL) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 String jsonData = getResponse(new URL(API_URL + stringURL));
@@ -44,7 +48,7 @@ public class AsyncDataManager  {
         });
     }
 
-    public CompletableFuture<Integer> sendRequest(HttpRequestType requestType, String stringURL, JSONObject jsonBody) {
+    public static CompletableFuture<Integer> sendRequest(HttpRequestType requestType, String stringURL, JSONObject jsonBody) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 URL url = new URL(API_URL + stringURL);
@@ -72,14 +76,12 @@ public class AsyncDataManager  {
     }
 
     private static String getResponse(URL url) {
-        BufferedReader in = null;
-        HttpURLConnection connection = null;
         try {
-            connection = (HttpURLConnection) url.openConnection();
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setConnectTimeout(3000);
             connection.connect();
 
-            in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             StringBuilder response = new StringBuilder();
             String inputLine;
 
@@ -94,18 +96,6 @@ public class AsyncDataManager  {
             e.printStackTrace();
         }
 
-        finally {
-            try {
-                if (connection != null)
-                    connection.disconnect();
-
-                if (in != null)
-                    in.close();
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
         return null;
     }
 }

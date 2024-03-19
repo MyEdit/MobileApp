@@ -12,15 +12,15 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.mobileapp.api.utils.AsyncDataManager;
-import com.example.mobileapp.api.utils.HttpRequestType;
+import com.example.mobileapp.utils.AsyncDataManager;
+import com.example.mobileapp.utils.HttpRequestType;
+import com.example.mobileapp.utils.NotificationManager;
 
 import org.json.JSONException;
 
 import java.net.HttpURLConnection;
 
 public class SecondActivity extends AppCompatActivity {
-    private static final AsyncDataManager asyncDataManager = new AsyncDataManager();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,39 +34,35 @@ public class SecondActivity extends AppCompatActivity {
         });
     }
 
-    public void onButtonAddMedicine_Clicked(View view) {
-        try {
-            int id = Integer.parseInt(((EditText)findViewById(R.id.ID)).getText().toString());
-            String name = ((EditText)findViewById(R.id.Name)).getText().toString();
-            String storage = ((EditText)findViewById(R.id.Storage)).getText().toString();
-            int count = Integer.parseInt(((EditText)findViewById(R.id.Count)).getText().toString());
-
-            addMedicine(new Medicines(id, name, storage, count));
-        } catch (NumberFormatException e) {
-            showNotification("Произошла ошибка при добавлении препарата, входные данные невалидны");
-        }
-    }
-
     public void addMedicine(Medicines medicine) {
         try {
-            asyncDataManager.sendRequest(HttpRequestType.POST, "addMedicine", medicine.toJSONObject()).thenAccept(data -> runOnUiThread(() -> onAddMedicine(medicine, data)));
+            AsyncDataManager.sendRequest(HttpRequestType.POST, "addMedicine", medicine.toJSONObject()).thenAccept(data -> runOnUiThread(() -> onAddMedicine(medicine, data)));
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
     }
 
+    //**********События работы AsyncDataManager**********//
     private void onAddMedicine(Medicines medicine, int status) {
         if (status == HttpURLConnection.HTTP_OK) {
-            showNotification("Препарат " + medicine.Name + " успешно добавлен");
+            NotificationManager.showNotification(this, "Препарат " + medicine.getName() + " успешно добавлен");
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
         }
         else
-            showNotification("Произошла ошибка при добавлении препарата - " + medicine.Name);
+            NotificationManager.showNotification(this, "Произошла ошибка при добавлении препарата - " + medicine.getName());
     }
 
-    public void showNotification(String text) {
-        Toast toast = Toast.makeText(this, text, Toast.LENGTH_LONG);
-        toast.show();
+    //**********События кнопок**********//
+    public void onButtonAddMedicine_Clicked(View view) {
+        try {
+            String name = ((EditText)findViewById(R.id.Name)).getText().toString();
+            String storage = ((EditText)findViewById(R.id.Storage)).getText().toString();
+            int count = Integer.parseInt(((EditText)findViewById(R.id.Count)).getText().toString());
+
+            addMedicine(new Medicines(name, storage, count));
+        } catch (NumberFormatException e) {
+            NotificationManager.showNotification(this, "Произошла ошибка при добавлении препарата, входные данные невалидны");
+        }
     }
 }

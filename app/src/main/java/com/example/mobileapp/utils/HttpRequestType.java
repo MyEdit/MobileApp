@@ -1,4 +1,4 @@
-package com.example.mobileapp.api.utils;
+package com.example.mobileapp.utils;
 
 public enum HttpRequestType {
     GET,
