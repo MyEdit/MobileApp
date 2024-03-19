@@ -130,6 +130,19 @@ public class MainActivity extends AppCompatActivity {
     public void onButtonDeleteMedicine_Clicked(View view) {
         deleteMedicine(selectedMedicine);
     }
+
+    public void onButtonEditMedicine_Clicked(View view) {
+        if (selectedMedicine == null)
+            return;
+
+        Intent intent = new Intent(this, EditActivity.class);
+        intent.putExtra("Medicines", selectedMedicine);
+        startActivity(intent);
+    }
+
+    public void onButtonMoreDetailsMedicine_Clicked(View view) {
+
+    }
 }
 /*
 List<String[]> rows = Arrays.asList(
