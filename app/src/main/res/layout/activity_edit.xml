@@ -12,6 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="50dp"
+        android:onClick="onButtonEdit_Clicked"
         android:text="Изменить"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -20,12 +21,12 @@
 
     <ImageView
         android:id="@+id/imageViewBack"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:onClick="onImageViewBack_Clicked"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_revert" />
+        app:srcCompat="?attr/homeAsUpIndicator" />
 
     <LinearLayout
         android:layout_width="409dp"
@@ -40,43 +41,60 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageViewBack">
 
-        <TextView
-            android:id="@+id/textViewName"
+        <EditText
+            android:id="@+id/editTextName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="15dp"
             android:layout_marginRight="10dp"
+            android:ems="10"
+            android:inputType="text"
             android:text="Name"
             android:textSize="24sp" />
 
-        <TextView
-            android:id="@+id/textViewStorage"
+        <EditText
+            android:id="@+id/editTextStorage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="15dp"
             android:layout_marginRight="10dp"
+            android:ems="10"
+            android:inputType="text"
             android:text="Storage"
             android:textSize="24sp" />
 
-        <TextView
-            android:id="@+id/textViewCount"
+        <EditText
+            android:id="@+id/editTextCount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="15dp"
             android:layout_marginRight="10dp"
-            android:text="Count"
+            android:ems="10"
+            android:inputType="numberSigned"
+            android:text="0"
             android:textSize="24sp" />
 
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginTop="30dp"
-            app:srcCompat="@drawable/__2023_09_19_163532" />
+            android:onClick="onImageView_Clicked"
+            app:srcCompat="@android:drawable/ic_menu_gallery" />
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:text="Изменение записи"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/imageViewBack"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

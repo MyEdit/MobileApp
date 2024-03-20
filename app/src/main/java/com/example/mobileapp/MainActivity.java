@@ -90,9 +90,9 @@ public class MainActivity extends AppCompatActivity {
         tableRow.setOnClickListener(v -> {
             for (int j = 0; j < tableLayout.getChildCount(); j++) {
                 TableRow currentRow = (TableRow) tableLayout.getChildAt(j);
-                currentRow.setBackgroundColor(Color.WHITE);
+                currentRow.setBackgroundColor(Color.rgb(20,18,24));
             }
-            tableRow.setBackgroundColor(Color.rgb(200, 200, 200));
+            tableRow.setBackgroundColor(Color.rgb(34, 31, 41));
             selectedMedicine = medicines;
         });
 
